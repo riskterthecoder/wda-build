@@ -1,19 +1,15 @@
 name: Build WebDriverAgent
-
 on:
   workflow_dispatch:
-
 jobs:
   build:
     runs-on: macos-14
     steps:
       - name: Clone WebDriverAgent
         run: git clone --depth 1 https://github.com/appium/WebDriverAgent.git wda
-
       - name: Install dependencies
         working-directory: wda
         run: npm install
-
       - name: Build unsigned WebDriverAgentRunner
         working-directory: wda
         run: |
@@ -24,18 +20,12 @@ jobs:
             -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO
-
       - name: Package as IPA
         working-directory: wda
         run: |
           cd build/Build/Products/Debug-iphoneos
+          rm -rf WebDriverAgentRunner-Runner.app/Frameworks/XC*.framework
           mkdir Payload
           cp -R WebDriverAgentRunner-Runner.app Payload/
           zip -r WebDriverAgentRunner-Runner.ipa Payload
-          mv WebDriverAgentRunner-Runner.ipa $GITHUB_WORKSPACE/
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: WebDriverAgentRunner-Runner
-          path: WebDriverAgentRunner-Runner.ipa
+          mv WebDriverAgentRunner-Runner
