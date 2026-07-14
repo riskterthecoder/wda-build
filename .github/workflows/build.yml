@@ -25,6 +25,7 @@ jobs:
         run: |
           cd build/Build/Products/Debug-iphoneos
           rm -rf WebDriverAgentRunner-Runner.app/Frameworks/XC*.framework
+          codesign --force --deep --sign - WebDriverAgentRunner-Runner.app
           mkdir Payload
           cp -R WebDriverAgentRunner-Runner.app Payload/
           zip -r WebDriverAgentRunner-Runner.ipa Payload
